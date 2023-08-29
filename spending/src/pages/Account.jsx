@@ -1,4 +1,3 @@
-import { useQuery } from "@tanstack/react-query";
 import { productsService } from "../services/product.services";
 import { edit, home, negative_recurring, positive_recurring, trash } from "../assets";
 import { useState } from "react";
@@ -6,11 +5,26 @@ import { authService } from "../services/auth.services";
 
 
 const Account = () => {
+    
     const user = authService.getUser()
     if(user === null){
         window.location.href = `https://${window.location.host}/#login`
     }
-    const { data, status,refetch } = useQuery({queryKey: ["users"],queryFn: productsService.account,});
+    const [status,setStat] = useState("false")
+    const [data,setData] = useState([])
+    function refetch(){
+        productsService.account().then(function(data){
+            setData(data)
+            setStat('success')
+        })
+
+    }
+    refetch()
+    
+        
+    
+    
+    
     const remove = (index) => {
         productsService.remove(index).then(function(){
           refetch()
