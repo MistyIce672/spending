@@ -1,4 +1,4 @@
-import { API_URL } from "../api";
+
 
 
 const TOKEN_KEY = import.meta.env.VITE_TOKEN_KEY || "user_";
@@ -7,7 +7,7 @@ const TOKEN_KEY = import.meta.env.VITE_TOKEN_KEY || "user_";
 export class AuthService {
     async login(email,password) {
         let data = JSON.stringify({email:email,password:password})
-        const response = await fetch(`${API_URL}/login`, {
+        const response = await fetch(`/login`, {
             method: "POST",
             body: data,
             headers: {
@@ -25,7 +25,7 @@ export class AuthService {
     }
     async signup(email,password) {
         let data = JSON.stringify({email:email,password:password})
-        const response = await fetch(`${API_URL}/signup`, {
+        const response = await fetch(`/signup`, {
             method: "POST",
             body: data,
             headers: {
