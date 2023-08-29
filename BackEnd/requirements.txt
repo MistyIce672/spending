@@ -1,5 +1,5 @@
 flask
-python-jwt
+pyjwt
 pymongo
 python-dotenv
 flask-cors
