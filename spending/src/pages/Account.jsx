@@ -1,25 +1,30 @@
 import { productsService } from "../services/product.services";
-import { edit, home, negative_recurring, positive_recurring, trash } from "../assets";
-import { useState } from "react";
+import { dollar, edit, home, negative_recurring, positive_recurring, trash } from "../assets";
+import { useEffect, useState } from "react";
 import { authService } from "../services/auth.services";
+import { useNavigate } from "react-router-dom";
 
 
 const Account = () => {
+  const navigate = useNavigate()
     
     const user = authService.getUser()
     if(user === null){
-        window.location.href = `https://${window.location.host}/#login`
+      console.log("redi")
+      navigate('/login')
     }
-    const [status,setStat] = useState("false")
+    const [status,setStat] = useState("loading")
     const [data,setData] = useState([])
     function refetch(){
-        productsService.account().then(function(data){
+        productsService.account(user).then(function(data){
             setData(data)
             setStat('success')
         })
 
     }
-    refetch()
+    useEffect(() => {
+      refetch()
+    },[])
     
         
     
@@ -70,10 +75,18 @@ const Account = () => {
       }
       const logout = () =>{
         authService.logout()
-        window.location.href = `https://${window.location.host}/#login`
+        navigate('/login')
       }
   return (
     <div className="absolute w-full h-full bg-primary flex justify-around">
+        {status === "loading" && (
+          <div className="m-auto">
+            <div className="border-4 border-positive p-6 rounded-[50%] animate-coin">
+              <img src={dollar} alt="dollar" className="w-[120px]" />
+            </div>
+            <p className="text-white ubuntu text-[24px] text-center">Loading...</p>
+          </div>
+        )} 
         {status === "success" && (
             
             <div className="w-[400px]">

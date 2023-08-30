@@ -18,7 +18,7 @@ app.config['SECRET_KEY'] = key
 def home():
     return(render_template("index.html"))
 
-@app.route('/signup',methods = ["POST"])
+@app.route('/api/signup',methods = ["POST"])
 def signup():
     if request.method == "POST":
         email = request.json['email']
@@ -27,11 +27,11 @@ def signup():
 
         if newAccount["status"] == True:
             token = jwt.encode({'email': email,"password":password, 'expiration' : str(datetime.utcnow() + timedelta (seconds = 120))}, app.config["SECRET_KEY"],algorithm="HS256")
-            return ({"token": token})
+            return ({"status":True,"token": token})
         else:
-            return ({"invalid signup" : newAccount['error']})
+            return ({"status":False,"error" : "Email already in use"})
         
-@app.route('/login',methods = ["POST"])
+@app.route('/api/login',methods = ["POST"])
 def login():
     if request.method == "POST":
         email = request.json['email']
@@ -39,11 +39,11 @@ def login():
         acc = dataLayer.auth(email,password)
         if acc['status'] is True:
             token = jwt.encode({'email': email,"password":password, 'expiration' : str(datetime.utcnow() +  timedelta (seconds=120)) }, app.config["SECRET_KEY"],algorithm="HS256")
-            return ({'token': token})
+            return ({"status":True,'token': token})
         else:
-            return ({"invalid":"invalid username or password"})
+            return ({"status":False,"error":"invalid username or password"})
 
-@app.route('/expense/add',methods = ["POST"])
+@app.route('/api/expense/add',methods = ["POST"])
 def add_expense():
     if 'name' not in request.json:
         return({"error":"name is required"})
@@ -63,7 +63,7 @@ def add_expense():
     
     #
     
-@app.route('/income/add',methods = ["POST"])
+@app.route('/api/income/add',methods = ["POST"])
 def add_income():
     if 'name' not in request.json:
         return({"error":"name is required"})
@@ -81,11 +81,15 @@ def add_income():
     dataLayer.add_income(user_id,name,amount,term,occurrence)
     return({"status":True})
 
-@app.route('/finance/<term>')
+@app.route('/api/finance/<term>')
 def finance(term):
     if term == 'current':
         term = datetime.today().strftime("%Y-%m")
+    if 'Authorization' not in request.headers:
+        return({"status":False,"error":"Authorization is required"})
     user = validate_token(request.headers['Authorization'])
+    if user == False:
+        return({"status":False,"error":"invalid token"})
     recurring = dataLayer.get_recurring_items(user)
     term_items = dataLayer.get_term_items(user,term)
     items = []
@@ -111,16 +115,18 @@ def finance(term):
             total -= item['amount']
             total_expenses += item['amount']
             expenses.append(item)
-    return({"total_income":total_income,'total_expenses':total_expenses,"total":total,'income':income,'expenses':expenses})
+    return({"status":True,"total_income":total_income,'total_expenses':total_expenses,"total":total,'income':income,'expenses':expenses})
 
-@app.route('/account')
+@app.route('/api/account')
 def account():
     if 'Authorization' not in request.headers:
-        return({"error":'Authorization required in header'})
+        return({"status":False,"error":'Authorization required in header'})
     token = request.headers['Authorization']
     if token == False:
-        return({"error":"invalid token"})
+        return({"status":False,"error":"invalid token"})
     user = validate_token(token)
+    if user == False:
+        return({"status":False,"error":"invalid token"})
     email = dataLayer.get_email(user)
     recurring = dataLayer.get_recurring_items(user)
     items = []
@@ -128,9 +134,9 @@ def account():
         item['_id'] = str(item['_id'])
         item['user'] = str(item['user'])
         items.append(item)
-    return({"items":items,'email':email})
+    return({"status":True,"items":items,'email':email})
 
-@app.route("/item/<item_id>",methods=['DELETE'])
+@app.route("/api/item/<item_id>",methods=['DELETE'])
 def delete_item(item_id):
     user = validate_token(request.headers['Authorization'])
     return(dataLayer.delete_item(user,item_id))
@@ -139,14 +145,17 @@ def delete_item(item_id):
 
 
 def validate_token(token):
-    payload = jwt.decode(token,app.config["SECRET_KEY"],algorithms=["HS256"])
-    print(payload)
-    sc = dataLayer.auth(payload['email'],payload['password'])
-    if sc['status'] == True:
-        return(sc['_id'])
-    else:
+    try:
+        payload = jwt.decode(token,app.config["SECRET_KEY"],algorithms=["HS256"])
+        print(payload)
+        sc = dataLayer.auth(payload['email'],payload['password'])
+        if sc['status'] == True:
+            return(sc['_id'])
+        else:
+            return(False)
+    except:
         return(False)
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0',port=5000)
+    app.run(host='0.0.0.0',port=3000)

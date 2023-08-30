@@ -1,3 +1,4 @@
+import { API_URL } from "../api";
 import { authService } from "./auth.services";
 
 const date = new Date(); 
@@ -12,10 +13,10 @@ let current = `${year}-${month}`
 const token = authService.getUser()
 
 export class ProductsService {
-    async getFinance(){
-        const res = await fetch(`/finance/${current}`,{headers: {
+    async getFinance(tk){
+        const res = await fetch(`${API_URL}/api/finance/${current}`,{headers: {
           "Content-Type": "application/json",
-          "Authorization": token
+          "Authorization": tk
       }});
         return res.json();
       }
@@ -24,7 +25,7 @@ export class ProductsService {
             term = current
         }
         let data = JSON.stringify({"name":name,'amount':amount,"term":term,'occurrence':occurrence})
-        return await fetch(`/expense/add`,{
+        return await fetch(`${API_URL}/api/expense/add`,{
             method:"POST",
             body: data,
             headers: {
@@ -38,7 +39,7 @@ export class ProductsService {
             term = current
         }
         let data = JSON.stringify({"name":name,'amount':amount,"term":term,'occurrence':occurrence})
-        return await fetch(`/income/add`,{
+        return await fetch(`${API_URL}/api/income/add`,{
             method:"POST",
             body: data,
             headers: {
@@ -48,7 +49,7 @@ export class ProductsService {
         }).then(res => res.json());
     }
     async remove(id){
-        return await fetch(`/item/${id}`,{
+        return await fetch(`${API_URL}/api/item/${id}`,{
             method:"DELETE",
             headers: {
                 "Content-Type": "application/json",
@@ -57,12 +58,12 @@ export class ProductsService {
         }).then(res => res.json());
 
     }
-    async account(){
-        return await fetch(`/account`,{
+    async account(tk){
+        return await fetch(`${API_URL}/api/account`,{
             method:"GET",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": token
+                "Authorization": tk
             }
         }).then(res => res.json());
 

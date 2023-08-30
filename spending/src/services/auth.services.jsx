@@ -1,3 +1,4 @@
+import { API_URL } from "../api";
 
 
 
@@ -7,7 +8,7 @@ const TOKEN_KEY = import.meta.env.VITE_TOKEN_KEY || "user_";
 export class AuthService {
     async login(email,password) {
         let data = JSON.stringify({email:email,password:password})
-        const response = await fetch(`/login`, {
+        const response = await fetch(`${API_URL}/api/login`, {
             method: "POST",
             body: data,
             headers: {
@@ -20,12 +21,12 @@ export class AuthService {
             localStorage.setItem(TOKEN_KEY, response.token);
             return(true)
         }else{
-            return(false)
+            return(response.error)
         }
     }
     async signup(email,password) {
         let data = JSON.stringify({email:email,password:password})
-        const response = await fetch(`/signup`, {
+        const response = await fetch(`${API_URL}/api/signup`, {
             method: "POST",
             body: data,
             headers: {
@@ -36,6 +37,9 @@ export class AuthService {
 
         if(response.token){
             localStorage.setItem(TOKEN_KEY, response.token);
+            return(true)
+        }else{
+            return(response.error)
         }
     }
 

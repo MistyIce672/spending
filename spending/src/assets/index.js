@@ -5,6 +5,7 @@ import trash from './trash.png'
 import hamburger from './hamburger.png'
 import user from './user.png'
 import home from './home.png'
+import dollar from './dollar.png'
 
 export {
     positive_recurring,
@@ -13,5 +14,6 @@ export {
     trash,
     hamburger,
     user,
-    home
+    home,
+    dollar
 }

@@ -19,18 +19,16 @@ module.exports = {
         btn : "0 0 35px rgba(243, 90, 10,.3)",
       },
       animation: {
-        ["infinite-slider"]: "infiniteSlider 70s linear infinite",
-        ["brand-slider"]: "brandSlider 20s linear infinite",
-        ["flow"]: "flow 4s linear infinite",
-        ["flowI"]: "flowI 6s linear infinite",
-        ["flowM"]: "flowM 8s linear infinite",
+        ["coin"]: "jump 3s linear infinite",
       },
       
       keyframes: {
-        infiniteSlider: {
-          "0%": { transform: "translateX(0)" },
+        jump: {
+          "0%": { transform: "translateY(0px)" },
+
+          "50%": { transform: "translateY(-20px)" },
           "100%": {
-            transform: "translateX(calc(-412px * 12))",
+            transform: "translateX(0px)",
           },
         },
         brandSlider: {

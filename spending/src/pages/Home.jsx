@@ -1,17 +1,38 @@
-import { useQuery } from "@tanstack/react-query";
 import { productsService } from "../services/product.services";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "../style";
-import { edit, hamburger, negative_recurring, positive_recurring, trash, user } from "../assets";
+import { dollar, edit, hamburger, negative_recurring, positive_recurring, trash, user } from "../assets";
 import { authService } from "../services/auth.services";
+import  { useNavigate  }  from 'react-router-dom'
 
 const Home = () => {
+  const navigate = useNavigate();
   const token = authService.getUser()
+  console.log(token,"getUser")
   if(token === null){
-      window.location.href = `https://${window.location.host}/#login`
+    navigate("/login");
   }
   
-  const { data, status,refetch } = useQuery({queryKey: ["users"],queryFn: productsService.getFinance,});
+  const [status,setStat] = useState("loading")
+  const [data,setData] = useState({})
+  function refetch(){
+    console.log("refetech")
+      productsService.getFinance(token).then(function(response){
+          setData(response)
+          console.log(response.status)
+          if (response.status === true){
+            console.log("set")
+            setStat('success')
+          }else if (response.error === "invalid token"){
+            navigate("/login");
+          }
+          
+      })
+
+  }
+  useEffect(() =>{
+    refetch();
+  }, [])
   
   
   const submitExpense = () => {
@@ -40,7 +61,6 @@ const Home = () => {
       refetch()
     })
   }
-  console.log(status)
   const [expense,setExpense] = useState(false)
   const switchExpense = () => {
     if (expense){
@@ -68,13 +88,21 @@ const Home = () => {
 
   return (
     <div className="absolute w-full h-full bg-primary flex justify-around">
+      {status === "loading" && (
+        <div className="m-auto">
+          <div className="border-4 border-positive p-6 rounded-[50%] animate-coin">
+            <img src={dollar} alt="dollar" className="w-[120px]" />
+          </div>
+          <p className="text-white ubuntu text-[24px] text-center">Loading...</p>
+        </div>
+      )} 
       {status === "success" && (
         <div className="w-[412px]">
           <div className="flex justify-between">
             <button>
               <img src={hamburger} alt="menu" className="w-[50px]" />
               </button>
-            <a href="/#account">
+            <a href="/#/account">
               <img src={user} alt="account" className="w-[50px]"/>
             </a>
           </div>
