@@ -43,6 +43,8 @@ def get_token_from_code():
         return ({})
     else:
         try:
+            print(vars(request))
+            print(request.json)
             if not request.json:
                 return ({"status": False, "error": "body is required"})
         except:
