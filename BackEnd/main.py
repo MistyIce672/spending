@@ -53,10 +53,10 @@ def get_user_info():
     token = request.headers['Authorization'].split(" ")[1]
     user_id = validate_token(token)
     if not user_id:
-        return ({"status": False, "error": "invalid otken"})
+        return "auth error", 401, {"status": False, "errors": ["invalid otken"]}
     account = dataLayer.get_user(user_id)
     if not account:
-        return ({"status": False, "error": "invalid user"})
+        return {"status": False, "error": "invalid user"}
     return ({"data": {"name": account['email'], "id": str(account['_id'])}})
 
 
