@@ -45,8 +45,7 @@ def get_status():
 def ift_setup():
     if request.headers['IFTTT-Channel-Key'] != channel_key:
         return "error", 401, {}
-    return({"data":{"access_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImdhdXRoNjcyQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiamFiYmEiLCJleHBpcmF0aW9uIjoiMjAyMy0xMS0xOCAxMjoyNDowNy41MzQxNTMifQ.GDtzGrv11UdjVC9ZSbkMPop_NP3qj5uGa6VWdriTTRw"},
-            "access_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImdhdXRoNjcyQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiamFiYmEiLCJleHBpcmF0aW9uIjoiMjAyMy0xMS0xOCAxMjoyNDowNy41MzQxNTMifQ.GDtzGrv11UdjVC9ZSbkMPop_NP3qj5uGa6VWdriTTRw"})
+    return({"data":{"accessToken":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImdhdXRoNjcyQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiamFiYmEiLCJleHBpcmF0aW9uIjoiMjAyMy0xMS0xOCAxMjoyNDowNy41MzQxNTMifQ.GDtzGrv11UdjVC9ZSbkMPop_NP3qj5uGa6VWdriTTRw"}})
 
 
 @app.route("/ifttt/v1/user/info")
