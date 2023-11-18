@@ -42,14 +42,7 @@ def get_token_from_code():
     if request.method == 'GET':
         return ({})
     else:
-        try:
-            print(vars(request))
-            print(request.form)
-            if not request.json:
-                return ({"status": False, "error": "body is required"})
-        except:
-            return ({"failed": "asd"})
-        code = request.json['code']
+        code = request.form.get("code")
         user_id = dataLayer.get_uid_from_code(code)
         if not user_id:
             return ({"status": False, "error": "invalid code"})
