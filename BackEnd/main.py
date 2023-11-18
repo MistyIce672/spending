@@ -43,18 +43,28 @@ def signup():
         return ({"status": False, "error": "Email already in use"})
 
 
+@app.route('/api/auth/code', methods=['POST'])
+def get_auth_code():
+    if 'Authorization' not in request.headers:
+        return ({"status": False, "error": "authorisation is required"})
+    user_id = validate_token(request.headers['Authorization'])
+    if not user_id:
+        return ({"status": False, "error": "invalid otken"})
+    code = dataLayer.get_code(user_id)
+    return ({"status": True, "code": code})
+
+
 @app.route('/api/login', methods=["POST"])
 def login():
-    if request.method == "POST":
-        email = request.json['email']
-        password = request.json['password']
-        acc = dataLayer.auth(email, password)
-        if acc['status'] is True:
-            token = jwt.encode({'email': email, "password": password, 'expiration': str(
-                datetime.utcnow() + timedelta(seconds=120))}, app.config["SECRET_KEY"], algorithm="HS256")
-            return ({"status": True, 'token': token})
-        else:
-            return ({"status": False, "error": "invalid username or password"})
+    email = request.json['email']
+    password = request.json['password']
+    acc = dataLayer.auth(email, password)
+    if acc['status'] is True:
+        token = jwt.encode({'email': email, "password": password, 'expiration': str(
+            datetime.utcnow() + timedelta(seconds=120))}, app.config["SECRET_KEY"], algorithm="HS256")
+        return ({"status": True, 'token': token})
+    else:
+        return ({"status": False, "error": "invalid username or password"})
 
 
 @app.route('/api/expense/add', methods=["POST"])
@@ -175,4 +185,4 @@ def validate_token(token):
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=4000)
+    app.run(host='0.0.0.0', port=4111)

@@ -68,6 +68,18 @@ export class ProductsService {
         }).then(res => res.json());
 
     }
+
+    async getCode(){
+        const token = authService.getUser()
+        const res = await fetch(`${API_URL}/api/auth/code`,{
+            method:"POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": token
+            }
+        })
+        return(res.json())
+    }
 }
 
 export const productsService = new ProductsService();

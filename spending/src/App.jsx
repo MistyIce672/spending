@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { HashRouter, Routes, Route } from 'react-router-dom';
-import { Home, Login,Account } from "./pages";
+import { Home, Login,Account, Auth } from "./pages";
 
 
 
@@ -15,7 +15,7 @@ function App() {
             <Route path="/" element={<Home />}/>
             <Route path="/login" element={<Login />}/>
             <Route path="/account" element={<Account />}/>
-            
+            <Route path="/auth" element={<Auth />}/>
           </Routes>
       </HashRouter>
     </QueryClientProvider>
