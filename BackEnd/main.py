@@ -93,12 +93,8 @@ def add_iftt_expense():
         return {"status": False, "errors": [{"message": "invalid token"}]}, 401
     if not request.json:
         return {}, 401
-    if 'name' not in request.json:
-        request.json['name'] = "new"
-    name = request.json['name']
-    if 'amount' not in request.json:
-        request.json['amt'] = 0
-    amount = int(request.json['amount'])
+    name = "new"
+    amount = 0
     term = datetime.today().strftime("%Y-%m")
     occurrence = "one_time"
     user_id = validate_token(request.headers['Authorization'])
