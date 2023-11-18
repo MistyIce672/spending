@@ -50,7 +50,7 @@ def ift_setup():
     return ({"data": {"accessToken": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImdhdXRoNjcyQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiamFiYmEiLCJleHBpcmF0aW9uIjoiMjAyMy0xMS0xOCAxMjoyNDowNy41MzQxNTMifQ.GDtzGrv11UdjVC9ZSbkMPop_NP3qj5uGa6VWdriTTRw"}})
 
 
-@app.route("/ifttt/v1/queries/budget")
+@app.route("/ifttt/v1/queries/budget",methods=['POST'])
 def get_iftt_budget():
     token = request.headers['Authorization'].split(" ")[1]
     user = validate_token(token)
