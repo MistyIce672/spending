@@ -60,7 +60,7 @@ def get_code(user_id):
 
 
 def get_user(uid):
-    account = accounts.find_one({"user_id": uid})
+    account = accounts.find_one({"_id": uid})
     return (account)
 
 
