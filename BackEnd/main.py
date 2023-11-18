@@ -46,7 +46,7 @@ def get_user_info():
     account = dataLayer.get_user(user_id)
     if not account:
         return ({"status": False, "error": "invalid user"})
-    return ({"name": account['email'], "id": str(account['_id'])})
+    return ({"data":{"name": account['email'], "id": str(account['_id'])}})
 
 
 @app.route("/api/token", methods=['POST', "GET"])
