@@ -44,7 +44,7 @@ def get_token_from_code():
     else:
         try:
             print(vars(request))
-            print(request.json)
+            print(request.form)
             if not request.json:
                 return ({"status": False, "error": "body is required"})
         except:
