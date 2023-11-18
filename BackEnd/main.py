@@ -1,4 +1,4 @@
-from flask import Flask, request, send_from_directory, redirect
+from flask import Flask, request, send_from_directory, redirect,make_response
 import jwt
 import dataLayer
 from datetime import datetime, timedelta
@@ -16,6 +16,7 @@ app.config['SECRET_KEY'] = key
 
 frontend_folder = os.path.join(os.path.dirname(__file__), '..', 'spending')
 
+channel_key = "Z_zhTjo-qB9UXO9MFpUg9z-Apok1Q3CWQ9DpVCS2yy0a1CRsIm6WhZHll4i3XScC"
 
 @app.route('/')
 def serve_index():
@@ -36,8 +37,15 @@ def redi_auth():
 
 @app.route("/ifttt/v1/status")
 def get_status():
-    print(request.headers['IFTTT-Channel-Key'])
-    return ({"status": True})
+    if request.headers['IFTTT-Channel-Key'] == channel_key:
+        return ({"status": True})
+    return "error", 401, {}
+
+@app.route("/ifttt/v1/test/setup",methods=['GET',"POST"])
+def ift_setup():
+    if request.headers['IFTTT-Channel-Key'] != channel_key:
+        return "error", 401, {}
+    return({"data":{"access_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImdhdXRoNjcyQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiamFiYmEiLCJleHBpcmF0aW9uIjoiMjAyMy0xMS0xOCAxMjoyNDowNy41MzQxNTMifQ.GDtzGrv11UdjVC9ZSbkMPop_NP3qj5uGa6VWdriTTRw"}})
 
 
 @app.route("/ifttt/v1/user/info")
