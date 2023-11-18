@@ -84,7 +84,39 @@ def get_iftt_budget():
             expenses.append(item)
     return ({"cursor":"asd","data":[{"status": True, "total_income": total_income, 'total_expenses': total_expenses, "total": total, 'income': income, 'expenses': expenses}]})
 
-
+@app.route("/ifttt/v1/actions/budgets",methods=['POST'])
+def get_iftt_budget():
+    token = request.headers['Authorization'].split(" ")[1]
+    user = validate_token(token)
+    if not user:
+        return {"status": False, "errors": [{"message": "invalid token"}]}, 401
+    term = datetime.today().strftime("%Y-%m")
+    recurring = dataLayer.get_recurring_items(user)
+    term_items = dataLayer.get_term_items(user, term)
+    items = []
+    for item in recurring:
+        item['_id'] = str(item['_id'])
+        item['user'] = str(item['user'])
+        items.append(item)
+    for item in term_items:
+        item['_id'] = str(item['_id'])
+        item['user'] = str(item['user'])
+        items.append(item)
+    total = 0
+    total_income = 0
+    total_expenses = 0
+    income = []
+    expenses = []
+    for item in items:
+        if item['direction'] == "income":
+            total += item['amount']
+            total_income += item['amount']
+            income.append(item)
+        if item['direction'] == "expense":
+            total -= item['amount']
+            total_expenses += item['amount']
+            expenses.append(item)
+    return ({"cursor":"asd","data":[{"status": True, "total_income": total_income, 'total_expenses': total_expenses, "total": total, 'income': income, 'expenses': expenses}]})
 
 
 
