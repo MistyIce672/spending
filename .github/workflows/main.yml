@@ -30,15 +30,15 @@ jobs:
           SSH_HOST: ${{ secrets.HOST }}
 
       - name: Check out the source
-        run: ssh staging 'cd personal/spending && git fetch && git reset --hard origin/main'
+        run: ssh staging 'cd spending && git fetch && git reset --hard origin/main'
 
       - name: Build Front end
         if: ${{ always() }}
-        run: ssh staging 'cd personal/spending/spending && npm i && npm run build'
+        run: ssh staging 'cd spending/spending && npm i && npm run build'
       
       - name: Stop the server
         run: ssh staging 'screen -XS spending quit'
         
       - name: Start the server
         if: ${{ always() }}
-        run: ssh staging 'cd personal/spending/BackEnd/ && screen -dmS spending python3 main.py'
+        run: ssh staging 'cd spending/BackEnd/ && screen -dmS spending python3 main.py'
