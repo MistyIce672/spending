@@ -98,8 +98,7 @@ def add_iftt_expense():
     amount = 0
     term = datetime.today().strftime("%Y-%m")
     occurrence = "one_time"
-    user_id = validate_token(request.headers['Authorization'])
-    dataLayer.add_expense(user_id, name, amount, term, occurrence)
+    dataLayer.add_expense(user, name, amount, term, occurrence)
     return ({"data": [{"id": "ajsdlaksd"}]})
 
 
