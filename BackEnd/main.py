@@ -1,4 +1,4 @@
-from flask import Flask, request, send_from_directory, redirect,make_response
+from flask import Flask, request, send_from_directory, redirect, make_response
 import jwt
 import dataLayer
 from datetime import datetime, timedelta
@@ -17,6 +17,7 @@ app.config['SECRET_KEY'] = key
 frontend_folder = os.path.join(os.path.dirname(__file__), '..', 'spending')
 
 channel_key = "Z_zhTjo-qB9UXO9MFpUg9z-Apok1Q3CWQ9DpVCS2yy0a1CRsIm6WhZHll4i3XScC"
+
 
 @app.route('/')
 def serve_index():
@@ -41,11 +42,50 @@ def get_status():
         return ({"status": True})
     return "error", 401, {}
 
-@app.route("/ifttt/v1/test/setup",methods=['GET',"POST"])
+
+@app.route("/ifttt/v1/test/setup", methods=['GET', "POST"])
 def ift_setup():
     if request.headers['IFTTT-Channel-Key'] != channel_key:
         return "error", 401, {}
-    return({"data":{"accessToken":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImdhdXRoNjcyQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiamFiYmEiLCJleHBpcmF0aW9uIjoiMjAyMy0xMS0xOCAxMjoyNDowNy41MzQxNTMifQ.GDtzGrv11UdjVC9ZSbkMPop_NP3qj5uGa6VWdriTTRw"}})
+    return ({"data": {"accessToken": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImdhdXRoNjcyQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiamFiYmEiLCJleHBpcmF0aW9uIjoiMjAyMy0xMS0xOCAxMjoyNDowNy41MzQxNTMifQ.GDtzGrv11UdjVC9ZSbkMPop_NP3qj5uGa6VWdriTTRw"}})
+
+
+@app.route("/ifttt/v1/queries/budget")
+def get_iftt_budget():
+    token = request.headers['Authorization'].split(" ")[1]
+    user = validate_token(token)
+    if not user:
+        return {"status": False, "errors": [{"message": "invalid token"}]}, 401
+    term = datetime.today().strftime("%Y-%m")
+    recurring = dataLayer.get_recurring_items(user)
+    term_items = dataLayer.get_term_items(user, term)
+    items = []
+    for item in recurring:
+        item['_id'] = str(item['_id'])
+        item['user'] = str(item['user'])
+        items.append(item)
+    for item in term_items:
+        item['_id'] = str(item['_id'])
+        item['user'] = str(item['user'])
+        items.append(item)
+    total = 0
+    total_income = 0
+    total_expenses = 0
+    income = []
+    expenses = []
+    for item in items:
+        if item['direction'] == "income":
+            total += item['amount']
+            total_income += item['amount']
+            income.append(item)
+        if item['direction'] == "expense":
+            total -= item['amount']
+            total_expenses += item['amount']
+            expenses.append(item)
+    return ({"data":[{"status": True, "total_income": total_income, 'total_expenses': total_expenses, "total": total, 'income': income, 'expenses': expenses}]})
+
+
+
 
 
 @app.route("/ifttt/v1/user/info")
@@ -53,14 +93,14 @@ def get_user_info():
     token = request.headers['Authorization'].split(" ")[1]
     user_id = validate_token(token)
     if not user_id:
-        return {"status": False, "errors": ["invalid otken"]}, 401
+        return {"status": False, "errors": [{"message": "invalid token"}]}, 401
     account = dataLayer.get_user(user_id)
     if not account:
         return {"status": False, "error": "invalid user"}
     return ({"data": {"name": account['email'], "id": str(account['_id'])}})
 
 
-@app.route("/api/token", methods=['POST', "GET"])
+@ app.route("/api/token", methods=['POST', "GET"])
 def get_token_from_code():
     if request.method == 'GET':
         return ({})
@@ -80,7 +120,7 @@ def get_token_from_code():
         return ({"access_token": token, "token_type": "token"})
 
 
-@app.route('/api/signup', methods=["POST"])
+@ app.route('/api/signup', methods=["POST"])
 def signup():
     email = request.json['email']
     password = request.json['password']
@@ -94,7 +134,7 @@ def signup():
         return ({"status": False, "error": "Email already in use"})
 
 
-@app.route('/api/auth/code', methods=['POST'])
+@ app.route('/api/auth/code', methods=['POST'])
 def get_auth_code():
     if 'Authorization' not in request.headers:
         return ({"status": False, "error": "authorisation is required"})
@@ -105,7 +145,7 @@ def get_auth_code():
     return ({"status": True, "code": code})
 
 
-@app.route('/api/login', methods=["POST"])
+@ app.route('/api/login', methods=["POST"])
 def login():
     email = request.json['email']
     password = request.json['password']
@@ -118,7 +158,7 @@ def login():
         return ({"status": False, "error": "invalid username or password"})
 
 
-@app.route('/api/expense/add', methods=["POST"])
+@ app.route('/api/expense/add', methods=["POST"])
 def add_expense():
     if 'name' not in request.json:
         return ({"error": "name is required"})
@@ -139,7 +179,7 @@ def add_expense():
     #
 
 
-@app.route('/api/income/add', methods=["POST"])
+@ app.route('/api/income/add', methods=["POST"])
 def add_income():
     if 'name' not in request.json:
         return ({"error": "name is required"})
@@ -158,7 +198,7 @@ def add_income():
     return ({"status": True})
 
 
-@app.route('/api/finance/<term>')
+@ app.route('/api/finance/<term>')
 def finance(term):
     if term == 'current':
         term = datetime.today().strftime("%Y-%m")
@@ -195,7 +235,7 @@ def finance(term):
     return ({"status": True, "total_income": total_income, 'total_expenses': total_expenses, "total": total, 'income': income, 'expenses': expenses})
 
 
-@app.route('/api/account')
+@ app.route('/api/account')
 def account():
     if 'Authorization' not in request.headers:
         return ({"status": False, "error": 'Authorization required in header'})
@@ -215,7 +255,7 @@ def account():
     return ({"status": True, "items": items, 'email': email})
 
 
-@app.route("/api/item/<item_id>", methods=['DELETE'])
+@ app.route("/api/item/<item_id>", methods=['DELETE'])
 def delete_item(item_id):
     user = validate_token(request.headers['Authorization'])
     return (dataLayer.delete_item(user, item_id))
