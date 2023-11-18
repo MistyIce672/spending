@@ -82,7 +82,7 @@ def get_iftt_budget():
             total -= item['amount']
             total_expenses += item['amount']
             expenses.append(item)
-    return ({"data":[{"status": True, "total_income": total_income, 'total_expenses': total_expenses, "total": total, 'income': income, 'expenses': expenses}]})
+    return ({"cursor":"asd","data":[{"status": True, "total_income": total_income, 'total_expenses': total_expenses, "total": total, 'income': income, 'expenses': expenses}]})
 
 
 
