@@ -1,4 +1,4 @@
-from flask import Flask, request, send_from_directory
+from flask import Flask, request, send_from_directory, redirect
 import jwt
 import dataLayer
 from datetime import datetime, timedelta
@@ -27,6 +27,14 @@ def serve_index():
 def serve_static(filename):
     return send_from_directory(
         os.path.join(frontend_folder, 'dist/assets'), filename)
+
+
+@app.route('/api/auth')
+def redi_auth():
+    print(vars(request))
+    print(request.headers)
+    print(request)
+    return (redirect("https://spending.mandadev.com/#/auth?"+str(request.query_string,'UTF-8')))
 
 
 @app.route('/api/signup', methods=["POST"])
