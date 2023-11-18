@@ -89,6 +89,7 @@ def get_iftt_budget():
 def add_iftt_expense():
     token = request.headers['Authorization'].split(" ")[1]
     user = validate_token(token)
+    print(user)
     if not user:
         return {"status": False, "errors": [{"message": "invalid token"}]}, 401
     if not request.json:
