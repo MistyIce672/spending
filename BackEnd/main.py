@@ -50,7 +50,7 @@ def ift_setup():
     return ({"data": {"accessToken": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImdhdXRoNjcyQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiamFiYmEiLCJleHBpcmF0aW9uIjoiMjAyMy0xMS0xOCAxMjoyNDowNy41MzQxNTMifQ.GDtzGrv11UdjVC9ZSbkMPop_NP3qj5uGa6VWdriTTRw"}})
 
 
-@app.route("/ifttt/v1/queries/budget",methods=['POST'])
+@app.route("/ifttt/v1/queries/budget", methods=['POST'])
 def get_iftt_budget():
     token = request.headers['Authorization'].split(" ")[1]
     user = validate_token(token)
@@ -82,9 +82,31 @@ def get_iftt_budget():
             total -= item['amount']
             total_expenses += item['amount']
             expenses.append(item)
-    return ({"cursor":"asd","data":[{"status": True, "total_income": total_income, 'total_expenses': total_expenses, "total": total, 'income': income, 'expenses': expenses}]})
+    return ({"cursor": "asd", "data": [{"status": True, "total_income": total_income, 'total_expenses': total_expenses, "total": total, 'income': income, 'expenses': expenses}]})
 
-@app.route("/ifttt/v1/actions/budgets",methods=['POST'])
+
+@app.route("/ifttt/v1/actions/expense", methods=['POST'])
+def add_iftt_expense():
+    token = request.headers['Authorization'].split(" ")[1]
+    user = validate_token(token)
+    if not user:
+        return {"status": False, "errors": [{"message": "invalid token"}]}, 401
+    if not request.json:
+        return {}, 401
+    if 'name' not in request.json:
+        request.json['name'] = "new"
+    name = request.json['name']
+    if 'amount' not in request.json:
+        request.json['amt'] = 0
+    amount = int(request.json['amount'])
+    term = datetime.today().strftime("%Y-%m")
+    occurrence = "one_time"
+    user_id = validate_token(request.headers['Authorization'])
+    dataLayer.add_expense(user_id, name, amount, term, occurrence)
+    return ({"data": [{"id": "ajsdlaksd"}]})
+
+
+@app.route("/ifttt/v1/actions/budgets", methods=['POST'])
 def get_iftt_budgets():
     token = request.headers['Authorization'].split(" ")[1]
     user = validate_token(token)
@@ -116,8 +138,7 @@ def get_iftt_budgets():
             total -= item['amount']
             total_expenses += item['amount']
             expenses.append(item)
-    return ({"cursor":"asd","data":[{"status": True, "total_income": total_income, 'total_expenses': total_expenses, "total": total, 'income': income, 'expenses': expenses}]})
-
+    return ({"cursor": "asd", "data": [{"status": True, "total_income": total_income, 'total_expenses': total_expenses, "total": total, 'income': income, 'expenses': expenses}]})
 
 
 @app.route("/ifttt/v1/user/info")
