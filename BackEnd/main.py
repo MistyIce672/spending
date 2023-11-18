@@ -34,7 +34,29 @@ def redi_auth():
     print(vars(request))
     print(request.headers)
     print(request)
-    return (redirect("https://spending.mandadev.com/#/auth?"+str(request.query_string,'UTF-8')))
+    return (redirect("https://spending.mandadev.com/#/auth?"+str(request.query_string, 'UTF-8')))
+
+
+@app.route("/api/token", methods=['POST', "GET"])
+def get_token_from_code():
+    if request.method == 'GET':
+        return ({})
+    else:
+        if not request.json:
+            return ({"status": False, "error": "body is required"})
+        code = request.json['code']
+        user_id = dataLayer.get_uid_from_code(code)
+        if not user_id:
+            return ({"status": False, "error": "invalid code"})
+        account = dataLayer.get_user(user_id)
+        if not account:
+            return ({"status": False, "error": "invalid user"})
+        token = jwt.encode({
+            'email': account['email'],
+            "password": account['password'],
+            'expiration': str(datetime.utcnow() + timedelta(seconds=120))
+        }, app.config["SECRET_KEY"], algorithm="HS256")
+        return ({"access_token": token, "token_type": "token"})
 
 
 @app.route('/api/signup', methods=["POST"])

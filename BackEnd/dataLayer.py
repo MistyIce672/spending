@@ -59,6 +59,18 @@ def get_code(user_id):
     return (code)
 
 
+def get_user(uid):
+    account = accounts.find_one({"user_id": uid})
+    return (account)
+
+
+def get_uid_from_code(code):
+    record = oauth.find_one({"code": code})
+    if not record:
+        return (False)
+    return (record['user_id'])
+
+
 def get_term_items(user_id, term):
     query = items.find({"user": user_id, 'term': term})
     new_items = []
