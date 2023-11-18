@@ -85,7 +85,7 @@ def get_iftt_budget():
     return ({"cursor":"asd","data":[{"status": True, "total_income": total_income, 'total_expenses': total_expenses, "total": total, 'income': income, 'expenses': expenses}]})
 
 @app.route("/ifttt/v1/actions/budgets",methods=['POST'])
-def get_iftt_budget():
+def get_iftt_budgets():
     token = request.headers['Authorization'].split(" ")[1]
     user = validate_token(token)
     if not user:
