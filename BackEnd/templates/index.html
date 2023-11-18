@@ -1,15 +1,87 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Spending</title>
-    <script type="module" crossorigin src="/static/index-7216b400.js"></script>
-    <link rel="stylesheet" href="/static/index-4341c6e1.css">
-  </head>
-  <body>
-    <div id="root"></div>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+    <script>
+        (function(d,t) {
+          var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+          g.src="https://app.chaskiq.io/embed.js"
+          s.parentNode.insertBefore(g,s);
+          g.onload=function(){
+            new window.ChaskiqMessengerEncrypted({
+              domain: 'https://app.chaskiq.io',
+              ws:  'wss://app.chaskiq.io/cable',
+              app_id: "QUYCUaYXVb9ZRvurG9t5rvNR",
+              data: "YOUR_ENCRYPTED_JWE_DATA",
+              lang: "USER_LANG_OR_DEFAULTS_TO_BROWSER_LANG" 
+            })
+          }
+        })(document,"script");
+      </script>
+    <div class="nav-bar">
+        <ul class="nav-items">
+            <li class="list-item"><a href="/"><div><img class="nav-img" src="trans.png" alt="logo"></div></a></li>
+            <li class="list-item"><a class="nav-link" ><p>CrownDev</p></a></li>
+            <li class="list-item"><a class="nav-link" ><p>Home</p></a></li>
+            <li class="list-item"><a class="nav-link" ><p>Pricing</p></a></li>
+            <li class="list-item"><a class="nav-link" ><p>Discord</p></a></li>
+        </ul>
+    </div>
+    <div class="abt-us">
+        <div class="abt-tbox">
+            <h1>About Us</h1>
+            <p class="abt-text">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley</p>
+        </div>
+        <div class="grad"></div>
+        <div class="img-bx">
+            <h1>Our Services</h1>
+            <p class="abt-text">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley</p>
+        </div>
+    </div>
+    <div class="get-st">
+        <h1 class="get-head">Get Started</h1>
+        <div class="ops">
+            <div class="opt">
+                <p>
+                    Veiw pricing 
+                    plans and more
+                    before u get 
+                    started 
+                </p>
+                <a class="btt-link" href="/pricing">
+                    <div class="btt-box">
+                        <p>
+                            Pricing
+                        </p>
+                    </div>
+                </a>
     
-  </body>
+            </div>
+            <div class="opt">
+                <p>
+                    Join our discord 
+                    to get more info 
+                    or place a order
+                </p>
+                <a class="btt-link" href="/pricing">
+                    <div class="btt-box">
+                        <p>
+                            Discord
+                        </p>
+                    </div>
+                </a>
+    
+            </div>
+            
+        </div>
+
+    </div>
+    
+</body>
 </html>

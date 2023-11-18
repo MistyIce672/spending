@@ -1,0 +1,48 @@
+name: CI
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+jobs:
+  deploy:
+    name: "Deploy to prod"
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$SSH_KEY" > ~/.ssh/id_rsa.key
+          chmod 600 ~/.ssh/id_rsa.key
+          cat >> ~/.ssh/config << EOF
+          Host staging
+            HostName $SSH_HOST
+            User $SSH_USER
+            IdentityFile ~/.ssh/id_rsa.key
+            StrictHostKeyChecking no
+          EOF
+        env:
+          SSH_USER: ${{ secrets.USERNAME }}
+          SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_HOST: ${{ secrets.HOST }}
+
+      - name: Check out the source
+        run: ssh staging 'cd production/cvtool/ && git fetch && git reset --hard origin/main'
+
+      - name: Build Front end
+        if: ${{ always() }}
+        run: ssh staging 'cd production/cvtool/frontend/ && npm i && npm run build'
+
+      - name: Build Image        
+        if: ${{ always() }}
+        run: ssh staging 'cd production/cvtool/ && buildah bud -t cvtool:latest .'
+      
+      - name: Stop the server
+        run: ssh staging 'podman stop cvtool && podman container rm cvtool-old && podman container rename cvtool cvtool-old'
+        
+      - name: Start the server
+        if: ${{ always() }}
+        run: ssh staging 'podman run -d --restart unless-stopped --name=cvtool -p 3111:3111 cvtool'

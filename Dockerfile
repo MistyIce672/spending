@@ -1,4 +1,3 @@
-
 FROM python
 
 WORKDIR /app
