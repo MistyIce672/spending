@@ -37,6 +37,18 @@ def redi_auth():
     return (redirect("https://spending.mandadev.com/#/auth?"+str(request.query_string, 'UTF-8')))
 
 
+@app.route("/ifttt/v1/user/info")
+def get_user_info():
+    token = request.headers['Authorization'].split(" ")[1]
+    user_id = validate_token(token)
+    if not user_id:
+        return ({"status": False, "error": "invalid otken"})
+    account = dataLayer.get_user(user_id)
+    if not account:
+        return ({"status": False, "error": "invalid user"})
+    return ({"name": account['email'], "id": str(account['_id'])})
+
+
 @app.route("/api/token", methods=['POST', "GET"])
 def get_token_from_code():
     if request.method == 'GET':
