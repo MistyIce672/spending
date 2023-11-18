@@ -31,10 +31,13 @@ def serve_static(filename):
 
 @app.route('/api/auth')
 def redi_auth():
-    print(vars(request))
-    print(request.headers)
-    print(request)
     return (redirect("https://spending.mandadev.com/#/auth?"+str(request.query_string, 'UTF-8')))
+
+
+@app.route("/ifttt/v1/status")
+def get_status():
+    print(request.headers['IFTTT-Channel-Key'])
+    return ({"status": True})
 
 
 @app.route("/ifttt/v1/user/info")
@@ -46,7 +49,7 @@ def get_user_info():
     account = dataLayer.get_user(user_id)
     if not account:
         return ({"status": False, "error": "invalid user"})
-    return ({"data":{"name": account['email'], "id": str(account['_id'])}})
+    return ({"data": {"name": account['email'], "id": str(account['_id'])}})
 
 
 @app.route("/api/token", methods=['POST', "GET"])
