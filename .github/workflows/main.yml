@@ -36,7 +36,7 @@ jobs:
         if: ${{ always() }}
         run: ssh staging 'cd spending/spending && npm i && npm run build'
       
-      - name: Stop the server
+      - name: Stop the server!
         run: ssh staging 'screen -XS spending quit'
         
       - name: Start the server
