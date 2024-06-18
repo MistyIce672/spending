@@ -30,7 +30,7 @@ jobs:
           SSH_HOST: ${{ secrets.HOST }}
 
       - name: Check out the source
-        run: ssh staging 'cd spending && git fetch && git reset --hard origin/main'
+        run: ssh staging 'cd prod/spending && git fetch && git reset --hard origin/main'
 
       - name: Build Front end
         if: ${{ always() }}
