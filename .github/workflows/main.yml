@@ -34,7 +34,7 @@ jobs:
 
       - name: Build Front end
         if: ${{ always() }}
-        run: ssh staging 'cd spending/spending && npm i && npm run build'
+        run: ssh staging 'cd prod/spending/spending && npm i && npm run build'
 
       - name: Build Image        
         if: ${{ always() }}
