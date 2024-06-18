@@ -35,10 +35,17 @@ jobs:
       - name: Build Front end
         if: ${{ always() }}
         run: ssh staging 'cd spending/spending && npm i && npm run build'
+
+      - name: Build Image        
+        if: ${{ always() }}
+        run: ssh staging 'cd prod/spending/ && buildah bud -t spending:latest .'
       
-      - name: Stop the server!
-        run: ssh staging 'screen -XS spending quit'
+      - name: Stop the container
+        run: ssh staging 'podman stop spending'
+
+      - name: delete old container
+        run: ssh staging 'podman container rm spending'
         
       - name: Start the server
         if: ${{ always() }}
-        run: ssh staging 'cd spending/BackEnd/ && screen -dmS spending python3 main.py'
+        run: ssh staging 'podman run -d --restart unless-stopped --name=spending -p 4111:4111 crm-pre'
