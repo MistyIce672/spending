@@ -48,4 +48,4 @@ jobs:
         
       - name: Start the server
         if: ${{ always() }}
-        run: ssh staging 'podman run -d --restart unless-stopped --name=spending -p 4111:4111 crm-pre'
+        run: ssh staging 'podman run -d --restart unless-stopped --name=spending -p 4111:4111 spending'

@@ -2,7 +2,7 @@ FROM python
 
 WORKDIR /app
 
-COPY requirements.txt .
+COPY BackEnd/requirements.txt .
 
 RUN pip install -r requirements.txt
 
@@ -10,4 +10,4 @@ COPY . .
 
 EXPOSE 5000
 
-CMD ["python", "main.py"]
+CMD ["python", "BackEnd/main.py"]
