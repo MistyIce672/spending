@@ -7,7 +7,7 @@ a mobile app might arive soon
 
 ## live demo 
 
-https://spending.mistyice.tk/
+https://spending.mandadev.com/#/login
 
 
 
